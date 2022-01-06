@@ -22,6 +22,13 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
+	@ExceptionHandler(ConnectionToJsonFeedRefusedExcetion.class)
+	public final ResponseEntity<Object> handleConnectionToJsonFeedRefusedExcetion(Exception ex, WebRequest request)  {
+		
+		ExceptionResponse exceptionResponse= 
+				new ExceptionResponse(new Date(),ex.getMessage(), request.getDescription(false) );
+		return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 	
 
 }
