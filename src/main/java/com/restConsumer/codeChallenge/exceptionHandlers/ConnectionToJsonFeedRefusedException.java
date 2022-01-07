@@ -1,13 +1,13 @@
 package com.restConsumer.codeChallenge.exceptionHandlers;
 
-public class ConnectionToJsonFeedRefusedExcetion extends Exception {
+public class ConnectionToJsonFeedRefusedException extends Exception {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5321344995568885969L;
 
-	public ConnectionToJsonFeedRefusedExcetion(String message) {
+	public ConnectionToJsonFeedRefusedException(String message) {
 		super(message);
 		
 	}

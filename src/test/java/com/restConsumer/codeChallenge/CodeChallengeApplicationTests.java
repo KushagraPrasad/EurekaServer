@@ -25,7 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.restConsumer.codeChallenge.controllers.ConsumerEndPointController;
-import com.restConsumer.codeChallenge.exceptionHandlers.ConnectionToJsonFeedRefusedExcetion;
+import com.restConsumer.codeChallenge.exceptionHandlers.ConnectionToJsonFeedRefusedException;
 import com.restConsumer.codeChallenge.model.Posts;
 import com.restConsumer.codeChallenge.services.ConsumerService;
 import com.restConsumer.codeChallenge.services.JsonDataParserService;
@@ -91,7 +91,7 @@ class CodeChallengeApplicationTests {
 	  ConsumerService consumerService;
 		
 		@Test
-		public void consumerService_ensureGetDataFromEndPointReturnsListOfPosts() throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedExcetion {
+		public void consumerService_ensureGetDataFromEndPointReturnsListOfPosts() throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedException {
 			when(jsonDataParserService.getPosts(serviceUrl)).thenReturn(Stream.of(new Posts(1l, 1l, "title", "body"),
 					new Posts(2l, 2l, "title2", "body2")).collect(Collectors.toList()));
 			
@@ -101,7 +101,7 @@ class CodeChallengeApplicationTests {
 		}
 	  
 		@Test
-		public void customerService_ensuregetProcessedDataRetrunsUpdatedJson() throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedExcetion {
+		public void customerService_ensuregetProcessedDataRetrunsUpdatedJson() throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedException {
 			when(jsonDataParserService.getPosts(serviceUrl)).thenReturn(Stream.of(new Posts(1l, 1l, "title", "body"),
 					new Posts(2l, 2l, "title2", "body2"),
 					new Posts(3l, 3l, "title2", "body2"),
@@ -113,11 +113,24 @@ class CodeChallengeApplicationTests {
 			assertNotNull(consumerService.getProcessedData(serviceUrl));
 		}
 		
+		@Test
+		public void customerService_ensureupdateTheNthElementSendsbackUpdatedData() throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedException {
+			when(jsonDataParserService.getPosts(serviceUrl)).thenReturn(Stream.of(new Posts(1l, 1l, "title", "body"),
+					new Posts(2l, 2l, "title2", "body2"),
+					new Posts(3l, 3l, "title2", "body2"),
+					new Posts(4l, 4l, "title3", "body3")).collect(Collectors.toList()));
+			
+			
+			assertEquals("1800Flowers",consumerService.getProcessedDataWithUpdatedNode( 3,  serviceUrl).get(3).getTitle());
+			assertEquals("1800Flowers",consumerService.getProcessedDataWithUpdatedNode( 3,  serviceUrl) .get(3).getBody());
+			assertNotNull(consumerService.getProcessedDataWithUpdatedNode(3,serviceUrl));
+		}
+		
 		@Autowired
 		ConsumerEndPointController consumerEndPointController;
 		
 		@Test
-		public void consumerEndPointController_ensureCountUniqueUserIdsReturnUnlyUniqueUSerIDsCount() throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedExcetion {
+		public void consumerEndPointController_ensureCountUniqueUserIdsReturnUnlyUniqueUSerIDsCount() throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedException {
 			when(jsonDataParserService.getPosts(serviceUrl)).thenReturn(Stream.of(new Posts(1l, 1l, "title", "body"),
 					new Posts(1l, 2l, "title2", "body2"),
 					new Posts(3l, 3l, "title2", "body2"),

@@ -6,12 +6,12 @@ import java.util.List;
 import org.apache.http.client.ClientProtocolException;
 import org.springframework.stereotype.Service;
 
-import com.restConsumer.codeChallenge.exceptionHandlers.ConnectionToJsonFeedRefusedExcetion;
+import com.restConsumer.codeChallenge.exceptionHandlers.ConnectionToJsonFeedRefusedException;
 import com.restConsumer.codeChallenge.model.Posts;
 
 @Service
 public interface JsonDataParserService {
 
-	List<Posts> getPosts(String serviceUrl) throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedExcetion;
+	List<Posts> getPosts(String serviceUrl) throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedException;
 
 }

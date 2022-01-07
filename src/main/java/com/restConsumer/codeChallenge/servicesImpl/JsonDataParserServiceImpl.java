@@ -15,12 +15,14 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import com.restConsumer.codeChallenge.exceptionHandlers.ConnectionToJsonFeedRefusedExcetion;
+import com.restConsumer.codeChallenge.exceptionHandlers.ConnectionToJsonFeedRefusedException;
 import com.restConsumer.codeChallenge.model.Posts;
 import com.restConsumer.codeChallenge.services.JsonDataParserService;
 
@@ -29,11 +31,14 @@ public class JsonDataParserServiceImpl implements JsonDataParserService {
 
 	private List<Posts> posts;
 	private String res=null;
+	private static final Logger LOGGER=LoggerFactory.getLogger(JsonDataParserServiceImpl.class);
+	 
 	//private String responseString=null;
 
 	@Override
-	public List<Posts> getPosts(String serviceUrl) throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedExcetion {
-		 HttpUriRequest
+	public List<Posts> getPosts(String serviceUrl) throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedException {
+		LOGGER.info("Starting to parse the JSON feed");
+		HttpUriRequest
 		  request = new HttpGet(serviceUrl);
 		   
 		  try {
@@ -49,7 +54,7 @@ public class JsonDataParserServiceImpl implements JsonDataParserService {
 			 
 			  res = new String(bytes, "UTF-8");
 			 
-			 // responseString = res.substring(1,res.length()-1);
+			 
 			  
 			  instream.close(); 
 			  
@@ -62,11 +67,14 @@ public class JsonDataParserServiceImpl implements JsonDataParserService {
 			
 			   posts =  gson.fromJson(reader ,postsListType);
 					      
-			
+			   LOGGER.info("JSON feed parsing was successfull.");
 			  
 		  }
 		  catch(HttpHostConnectException e) {
-			  throw new ConnectionToJsonFeedRefusedExcetion("No response recived from the JSON end point");
+			  LOGGER.info("JSON feed parsing was failed. No response recived from the JSON feed endpoint: "+e.toString());
+			  throw new ConnectionToJsonFeedRefusedException("No response recived from the JSON end point");
+		  }catch(Exception e){
+			  LOGGER.info("Exception occured: "+e.toString());
 		  }
 		
 		  return posts;
