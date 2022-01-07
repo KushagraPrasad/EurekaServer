@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.restConsumer.codeChallenge.exceptionHandlers.ConnectionToJsonFeedRefusedException;
+import com.restConsumer.codeChallenge.exceptionHandlers.IndexNotFoundException;
 import com.restConsumer.codeChallenge.model.Posts;
 import com.restConsumer.codeChallenge.services.ConsumerService;
 import com.restConsumer.codeChallenge.services.JsonDataParserService;
@@ -57,15 +58,21 @@ public class ConsumerServiceImpl implements ConsumerService {
 
 
 	@Override
-	public List<Posts> getProcessedDataWithUpdatedNode(int index, String serviceUrl) throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedException {
+	public List<Posts> getProcessedDataWithUpdatedNode(int index, String serviceUrl) throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedException, IndexNotFoundException {
 		LOGGER.info("Getting data from the feed.");
 		List<Posts> posts = JsonDataParserService.getPosts(serviceUrl);
 		LOGGER.info("Data was retrieved form the feed.");
 		LOGGER.info("Performing data updation on the feed.");
-		Posts post = posts.get(index);
+		Posts post;
+		try {
+		post = posts.get(index);
 		post.setTitle(stringConstant);
 		post.setBody(stringConstant);
 		posts.set(index, post);
+		}
+		catch(IndexOutOfBoundsException e){
+			throw new IndexNotFoundException("The upstream data feed only have "+posts.size()+" elements, enter within this range.");		
+		}
 		LOGGER.info("Data updation sucessfull.");
 		return posts;
 	

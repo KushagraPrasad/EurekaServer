@@ -27,7 +27,7 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
 		
 		ExceptionResponse exceptionResponse= 
 				new ExceptionResponse(new Date(),ex.getMessage(), request.getDescription(false) );
-		return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
 	}
 	
 	
@@ -36,6 +36,7 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
 		
 		ExceptionResponse exceptionResponse= 
 				new ExceptionResponse(new Date(),ex.getMessage(), request.getDescription(false) );
-		return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
+	
 }

@@ -26,6 +26,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.restConsumer.codeChallenge.controllers.ConsumerEndPointController;
 import com.restConsumer.codeChallenge.exceptionHandlers.ConnectionToJsonFeedRefusedException;
+import com.restConsumer.codeChallenge.exceptionHandlers.IndexNotFoundException;
 import com.restConsumer.codeChallenge.model.Posts;
 import com.restConsumer.codeChallenge.services.ConsumerService;
 import com.restConsumer.codeChallenge.services.JsonDataParserService;
@@ -114,7 +115,7 @@ class CodeChallengeApplicationTests {
 		}
 		
 		@Test
-		public void customerService_ensureupdateTheNthElementSendsbackUpdatedData() throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedException {
+		public void customerService_ensureupdateTheNthElementSendsbackUpdatedData() throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedException, IndexNotFoundException {
 			when(jsonDataParserService.getPosts(serviceUrl)).thenReturn(Stream.of(new Posts(1l, 1l, "title", "body"),
 					new Posts(2l, 2l, "title2", "body2"),
 					new Posts(3l, 3l, "title2", "body2"),
