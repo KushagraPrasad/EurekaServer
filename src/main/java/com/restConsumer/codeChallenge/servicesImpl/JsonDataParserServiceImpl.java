@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.restConsumer.codeChallenge.exceptionHandlers.ConnectionToJsonFeedRefusedException;
@@ -36,7 +37,8 @@ public class JsonDataParserServiceImpl implements JsonDataParserService {
 	//private String responseString=null;
 
 	@Override
-	public List<Posts> getPosts(String serviceUrl) throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedException {
+	public List<Posts> getPosts(String serviceUrl) 
+			throws ClientProtocolException, IOException, ConnectionToJsonFeedRefusedException {
 		LOGGER.info("Starting to parse the JSON feed");
 		HttpUriRequest
 		  request = new HttpGet(serviceUrl);
@@ -72,8 +74,12 @@ public class JsonDataParserServiceImpl implements JsonDataParserService {
 		  }
 		  catch(HttpHostConnectException e) {
 			  LOGGER.info("JSON feed parsing was failed. No response recived from the JSON feed endpoint: "+e.toString());
-			  throw new ConnectionToJsonFeedRefusedException("No response recived from the JSON end point");
-		  }catch(Exception e){
+			  throw new ConnectionToJsonFeedRefusedException("No response recived from the JSON end point "+e.toString());
+		  }
+		  catch(JsonSyntaxException  e){
+			  LOGGER.info("Exception occured: JSON feed parsing was failed "+e.toString());
+			  throw new JsonSyntaxException("The JSON feed is not in proper format: "+e.toString());
+	  }catch(Exception e){
 			  LOGGER.info("Exception occured: "+e.toString());
 		  }
 		
